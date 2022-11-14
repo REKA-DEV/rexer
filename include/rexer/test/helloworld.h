@@ -1,8 +1,8 @@
 #ifndef REXER_HELLOWORLD_H
 #define REXER_HELLOWORLD_H
 
-#include "../hello.h"
-#include "../world.h"
+#include "rexer/hello.h"
+#include "rexer/world.h"
 
 void helloworld();
 
