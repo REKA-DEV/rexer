@@ -1,31 +1,26 @@
 #ifndef REXER_OR_H
 #define REXER_OR_H
 
-#include <map>
-#include <memory>
-#include <vector>
-
-#include "oportuna/scanner/ScanResult.h"
-#include "oportuna/scanner/syntax/Syntax.h"
+#include "rexer/rule/Rule.h"
 
 using namespace std;
 
-namespace oportuna {
+namespace rexer {
 	
-	class OrSyntax : public Syntax {
+	class Or : public Rule {
 		private:
-			const map<int, shared_ptr<Syntax>> & syntaxMap;
+			const map<int, shared_ptr<Rule>> & ruleMap;
+			const bool bundle;
 			const vector<int> refKeys;
 			
-			vector<Syntax *> refSyntaxes;
+			vector<Rule *> refRules;
 		
 		public:
-			OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, vector<int> refKeys);
-			OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, vector<Syntax *> refSyntaxes);
-			OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, vector<int> refKeys);
-			OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, vector<Syntax *> refSyntaxes);
+			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys);
+			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<Rule *> refRules);
 			
-			shared_ptr<ScanResult> process(int scanIndex, const string & source, string::size_type start) override;
+			bool initiate() override;
+			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
 	};
 	
 }

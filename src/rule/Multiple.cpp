@@ -1,56 +1,65 @@
 #include "rexer/rule/Multiple.h"
 
-using namespace oportuna;
+using namespace rexer;
 
-MultipleSyntax::MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, bool bundle, int refKey) : MultipleSyntax(syntaxMap, -1, bundle, refKey) {
+Multiple::Multiple(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, int refKey) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKey(refKey) {
 	// EMPTY
 }
 
-MultipleSyntax::MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, bool bundle, Syntax * refSyntax) : MultipleSyntax(syntaxMap, -1, bundle, refSyntax) {
+Multiple::Multiple(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, Rule * refRule) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKey(-1), refRule(refRule) {
 	// EMPTY
 }
 
-MultipleSyntax::MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, bool bundle, int refKey) : Syntax(key), syntaxMap(syntaxMap), bundle(bundle), refKey(refKey) {
-	// EMPTY
-}
-
-MultipleSyntax::MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, bool bundle, Syntax * refSyntax) : Syntax(key), syntaxMap(syntaxMap), bundle(bundle), refKey(-1), refSyntax(refSyntax) {
-	// EMPTY
-}
-
-shared_ptr<ScanResult> MultipleSyntax::process(int scanIndex, const string & source, string::size_type start) {
-	if (this->refSyntax == nullptr) {
-		this->refSyntax = this->syntaxMap.find(this->refKey)->second.get();
-	}
-	
-	string::size_type end = start;
-	vector<shared_ptr<Token>> tokens;
-	ScanResult * most = nullptr;
-	
-	while (end < source.length()) {
-		shared_ptr<ScanResult> execute = this->refSyntax->execute(scanIndex, source, end);
-		
-		if (most == nullptr || (most->end < execute->most->end)) {
-			most = execute->most;
-		}
-		
-		if (!execute->success) {
+bool Multiple::initiate() {
+	do {
+		if (this->initiated) {
 			break;
 		}
 		
-		end = execute->end;
-		copy(execute->tokens.begin(), execute->tokens.end(), back_inserter(tokens));
+		if (this->refRule != nullptr) {
+			this->initiated = true;
+			break;
+		}
+		
+		this->refRule = this->ruleMap.find(this->refKey)->second.get();
+		this->initiated = this->refRule->initiate();
+	} while (false);
+	
+	return this->initiated;
+}
+
+shared_ptr<RexerResult> Multiple::rule(int id, const string & source, string::size_type start) {
+	// TODO: check initiated
+	
+	string::size_type end = start;
+	vector<shared_ptr<Token>> tokens;
+	RexerResult * most = nullptr;
+	
+	while (end < source.length()) {
+		RexerResult * refResult = this->refRule->execute(id, source, end);
+		
+		if (most == nullptr || (most->end < refResult->most->end)) {
+			most = refResult->most;
+		}
+		
+		if (!refResult->success) {
+			break;
+		}
+		
+		end = refResult->end;
+		copy(refResult->tokens.begin(), refResult->tokens.end(), back_inserter(tokens));
 	}
 	
-	shared_ptr<ScanResult> scanResult;
+	shared_ptr<RexerResult> rexerResult;
 	
 	if (this->bundle) {
-		scanResult = make_shared<ScanResult>(true, start, end, vector<shared_ptr<Token>>({
-			make_shared<Token>(this->key, start, end, tokens)
-		}), most);
+		vector<shared_ptr<Token>> bundled;
+		bundled.push_back(make_shared<Token>(this->key, start, end, move(tokens)));
+		
+		rexerResult = make_shared<RexerResult>(true, start, end, bundled, most);
 	} else {
-		scanResult = make_shared<ScanResult>(true, start, end, tokens, most);
+		rexerResult = make_shared<RexerResult>(true, start, end, move(tokens), most);
 	}
 	
-	return scanResult;
+	return rexerResult;
 }

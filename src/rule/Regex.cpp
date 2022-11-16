@@ -2,7 +2,7 @@
 
 using namespace rexer;
 
-Regex::Regex(int key, regex reg) : Rule(key), reg(move(reg)) {
+Regex::Regex(int key, const map<int, shared_ptr<Rule>> & ruleMap, regex reg) : Rule(key), reg(move(reg)) {
 	// EMPTY
 }
 

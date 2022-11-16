@@ -1,17 +1,17 @@
 #ifndef REXER_REXER_H
 #define REXER_REXER_H
 
-#include <map>
-#include <memory>
-#include <regex>
-#include <vector>
-
 #include "rexer/RexerResult.h"
 #include "rexer/rule/Rule.h"
-
-//#include "oportuna/scanner/syntax/Syntax.h"
-//#include "oportuna/scanner/syntax/RunSyntax.h"
-//#include "oportuna/util/Table.h"
+#include "rexer/rule/Group.h"
+#include "rexer/rule/Multiple.h"
+#include "rexer/rule/Optional.h"
+#include "rexer/rule/Or.h"
+#include "rexer/rule/Ref.h"
+#include "rexer/rule/Regex.h"
+#include "rexer/rule/Run.h"
+#include "rexer/rule/Skip.h"
+#include "rexer/rule/Word.h"
 
 using namespace std;
 
@@ -25,44 +25,57 @@ namespace rexer {
 		
 		public:
 			
-//			Syntax * sGroup(bool bundle, vector<int> refKeys);
-//			Syntax * sGroup(bool bundle, vector<Syntax *> refSyntaxes);
-//			Syntax * sGroup(int key, bool bundle, vector<int> refKeys);
-//			Syntax * sGroup(int key, bool bundle, vector<Syntax *> refSyntaxes);
-//
-//			Syntax * sMultiple(bool bundle, int refKey);
-//			Syntax * sMultiple(bool bundle, Syntax * refSyntax);
-//			Syntax * sMultiple(int key, bool bundle, int refKey);
-//			Syntax * sMultiple(int key, bool bundle, Syntax * refSyntax);
-//
-//			Syntax * sOptional(int refKey);
-//			Syntax * sOptional(Syntax * refSyntax);
-//			Syntax * sOptional(int key, int refKey);
-//			Syntax * sOptional(int key, Syntax * refSyntax);
-//
-//			Syntax * sOr(vector<int> refKeys);
-//			Syntax * sOr(vector<Syntax *> refSyntaxes);
-//			Syntax * sOr(int key, vector<int> refKeys);
-//			Syntax * sOr(int key, vector<Syntax *> refSyntaxes);
-//
-//			Syntax * sRef(int refKey);
-//			Syntax * sRef(Syntax * refSyntax);
-//			Syntax * sRef(int key, int refKey);
-//			Syntax * sRef(int key, Syntax * refSyntax);
-//
-//			Syntax * sRegex(regex reg);
-//			Syntax * sRegex(int key, regex reg);
-//
-//			Syntax * sRun(runnable run);
-//			Syntax * sRun(int key, runnable run);
-//
-//			Syntax * sSkip(int refKey);
-//			Syntax * sSkip(Syntax * refSyntax);
-//			Syntax * sSkip(int key, int refKey);
-//			Syntax * sSkip(int key, Syntax * refSyntax);
-//
-//			Syntax * sWord(string word);
-//			Syntax * sWord(int key, string word);
+			template<typename _Tp, typename... _Args>
+			Rule * make(int key, _Args &&... _args) {
+				shared_ptr<Rule> rule = make_shared<_Tp>(key, this->ruleMap, forward<_Args>(_args)...);
+				this->ruleMap[key] = rule;
+				return rule.get();
+			}
+			
+			template<typename... _Args>
+			Rule * mGroup(int key, _Args &&... _args) {
+				return this->make<Group>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mMultiple(int key, _Args &&... _args) {
+				return this->make<Multiple>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mOptional(int key, _Args &&... _args) {
+				return this->make<Optional>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mOr(int key, _Args &&... _args) {
+				return this->make<Or>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mRef(int key, _Args &&... _args) {
+				return this->make<Ref>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mRegex(int key, _Args &&... _args) {
+				return this->make<Regex>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mRun(int key, _Args &&... _args) {
+				return this->make<Run>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mSkip(int key, _Args &&... _args) {
+				return this->make<Skip>(key, forward<_Args>(_args)...);
+			}
+			
+			template<typename... _Args>
+			Rule * mWord(int key, _Args &&... _args) {
+				return this->make<Word>(key, forward<_Args>(_args)...);
+			}
 			
 			RexerResult * execute(int key, const string & source);
 	};

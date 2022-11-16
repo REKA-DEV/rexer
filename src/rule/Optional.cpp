@@ -1,29 +1,37 @@
 #include "rexer/rule/Optional.h"
 
-using namespace oportuna;
+using namespace rexer;
 
-OptionalSyntax::OptionalSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int refKey) : OptionalSyntax(syntaxMap, -1, refKey) {
+Optional::Optional(int key, const map<int, shared_ptr<Rule>> & ruleMap, int refKey) : Rule(key), ruleMap(ruleMap), refKey(refKey) {
 	// EMPTY
 }
 
-OptionalSyntax::OptionalSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, Syntax * refSyntax) : OptionalSyntax(syntaxMap, -1, refSyntax) {
+Optional::Optional(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * refRule) : Rule(key), ruleMap(ruleMap), refKey(-1), refRule(refRule) {
 	// EMPTY
 }
 
-OptionalSyntax::OptionalSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, int refKey) : Syntax(key), syntaxMap(syntaxMap), refKey(refKey) {
-	// EMPTY
-}
-
-OptionalSyntax::OptionalSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, Syntax * refSyntax) : Syntax(key), syntaxMap(syntaxMap), refKey(-1), refSyntax(refSyntax) {
-	// EMPTY
-}
-
-shared_ptr<ScanResult> OptionalSyntax::process(int scanIndex, const string & source, string::size_type start) {
-	if (this->refSyntax == nullptr) {
-		this->refSyntax = this->syntaxMap.find(this->refKey)->second.get();
-	}
+bool Optional::initiate() {
+	do {
+		if (this->initiated) {
+			break;
+		}
+		
+		if (this->refRule != nullptr) {
+			this->initiated = true;
+			break;
+		}
+		
+		this->refRule = this->ruleMap.find(this->refKey)->second.get();
+		this->initiated = this->refRule->initiate();
+	} while (false);
 	
-	shared_ptr<ScanResult> execute = this->refSyntax->execute(scanIndex, source, start);
+	return this->initiated;
+}
+
+shared_ptr<RexerResult> Optional::rule(int id, const string & source, string::size_type start) {
+	// TODO: check initiated
 	
-	return make_shared<ScanResult>(true, execute->start, execute->success ? execute->end : execute->start, execute->tokens, execute->most);
+	RexerResult * refResult = this->refRule->execute(id, source, start);
+	
+	return make_shared<RexerResult>(true, refResult->start, refResult->success ? refResult->end : refResult->start, refResult->tokens, refResult->most);
 }

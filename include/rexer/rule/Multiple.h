@@ -1,31 +1,26 @@
 #ifndef REXER_MULTIPLE_H
 #define REXER_MULTIPLE_H
 
-#include <map>
-#include <memory>
-
-#include "oportuna/scanner/ScanResult.h"
-#include "oportuna/scanner/syntax/Syntax.h"
+#include "rexer/rule/Rule.h"
 
 using namespace std;
 
-namespace oportuna {
+namespace rexer {
 	
-	class MultipleSyntax : public Syntax {
+	class Multiple : public Rule {
 		private:
-			const map<int, shared_ptr<Syntax>> & syntaxMap;
+			const map<int, shared_ptr<Rule>> & ruleMap;
 			const bool bundle;
 			const int refKey;
 			
-			Syntax * refSyntax = nullptr;
-			
+			Rule * refRule = nullptr;
+		
 		public:
-			MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, bool bundle, int refKey);
-			MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, bool bundle, Syntax * refSyntax);
-			MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, bool bundle, int refKey);
-			MultipleSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, bool bundle, Syntax * refSyntax);
+			explicit Multiple(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, int refKey);
+			explicit Multiple(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, Rule * refRule);
 			
-			shared_ptr<ScanResult> process(int scanIndex, const string & source, string::size_type start) override;
+			bool initiate() override;
+			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
 	};
 	
 }

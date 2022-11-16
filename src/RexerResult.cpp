@@ -1,26 +1,26 @@
-#include "oportuna/scanner/ScanResult.h"
+#include "rexer/RexerResult.h"
 
 #include <sstream>
 
-using namespace oportuna;
+using namespace rexer;
 
-ScanResult::ScanResult(bool success, string::size_type start, string::size_type end) : success(success), start(start), end(end) {
+RexerResult::RexerResult(bool success, string::size_type start, string::size_type end) : success(success), start(start), end(end) {
 	// EMPTY
 }
 
-ScanResult::ScanResult(bool success, string::size_type start, string::size_type end, ScanResult * most) : success(success), start(start), end(end), most(most) {
+RexerResult::RexerResult(bool success, string::size_type start, string::size_type end, RexerResult * most) : success(success), start(start), end(end), most(most) {
 	// EMPTY
 }
 
-ScanResult::ScanResult(bool success, string::size_type start, string::size_type end, vector<shared_ptr<Token>> tokens) : success(success), start(start), end(end), tokens(move(tokens)) {
+RexerResult::RexerResult(bool success, string::size_type start, string::size_type end, vector<shared_ptr<Token>> tokens) : success(success), start(start), end(end), tokens(move(tokens)) {
 	// EMPTY
 }
 
-ScanResult::ScanResult(bool success, string::size_type start, string::size_type end, vector<shared_ptr<Token>> tokens, ScanResult * most) : success(success), start(start), end(end), tokens(move(tokens)), most(most) {
+RexerResult::RexerResult(bool success, string::size_type start, string::size_type end, vector<shared_ptr<Token>> tokens, RexerResult * most) : success(success), start(start), end(end), tokens(move(tokens)), most(most) {
 	// EMPTY
 }
 
-string ScanResult::toString() {
+string RexerResult::toString() {
 	ostringstream stream;
 	
 	stream << "success: " << this->success << endl;

@@ -2,7 +2,7 @@
 
 using namespace rexer;
 
-Run::Run(int key, runnable run) : Rule(key), run(move(run)) {
+Run::Run(int key, const map<int, shared_ptr<Rule>> & ruleMap, runnable run) : Rule(key), run(move(run)) {
 	// EMPTY
 }
 

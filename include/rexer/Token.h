@@ -2,7 +2,6 @@
 #define REXER_TOKEN_H
 
 #include <memory>
-#include <string>
 #include <vector>
 
 using namespace std;

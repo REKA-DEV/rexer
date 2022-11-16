@@ -1,9 +1,6 @@
 #ifndef REXER_REF_H
 #define REXER_REF_H
 
-#include <map>
-
-#include "rexer/RexerResult.h"
 #include "rexer/rule/Rule.h"
 
 using namespace std;
@@ -18,8 +15,10 @@ namespace rexer {
 			Rule * refRule = nullptr;
 		
 		public:
-			explicit Ref(const map<int, shared_ptr<Rule>> & ruleMap, int key, int refKey);
-			explicit Ref(const map<int, shared_ptr<Rule>> & ruleMap, int key, Rule * refRule);
+			explicit Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, int refKey);
+			explicit Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * refRule);
+			
+			RexerResult * execute(int id, const string & source, string::size_type start) override;
 			
 			bool initiate() override;
 			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;

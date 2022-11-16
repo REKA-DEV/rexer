@@ -1,44 +1,57 @@
 #include "rexer/rule/Or.h"
 
-using namespace oportuna;
+using namespace rexer;
 
-OrSyntax::OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, vector<int> refKeys) : OrSyntax(syntaxMap, -1, move(refKeys)) {
+Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
 	// EMPTY
 }
 
-OrSyntax::OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, vector<Syntax *> refSyntaxes) : OrSyntax(syntaxMap, -1, move(refSyntaxes)) {
+Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<Rule *> refRules) : Rule(key), ruleMap(ruleMap), bundle(bundle), refRules(move(refRules)) {
 	// EMPTY
 }
 
-OrSyntax::OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, vector<int> refKeys) : Syntax(key), syntaxMap(syntaxMap), refKeys(move(refKeys)) {
-	// EMPTY
+bool Or::initiate() {
+	do {
+		if (this->initiated) {
+			break;
+		}
+		
+		if (!this->refRules.empty()) {
+			this->initiated = true;
+			break;
+		}
+		
+		bool initiating = true;
+		
+		for (auto & iterator : this->refKeys) {
+			Rule * rule = this->ruleMap.find(iterator)->second.get();
+			initiating = initiating && rule->initiate();
+			this->refRules.push_back(rule);
+		}
+		
+		this->initiated = initiating;
+	} while (false);
+	
+	return this->initiated;
 }
 
-OrSyntax::OrSyntax(const map<int, shared_ptr<Syntax>> & syntaxMap, int key, vector<Syntax *> refSyntaxes) : Syntax(key), syntaxMap(syntaxMap), refSyntaxes(move(refSyntaxes)) {
-	// EMPTY
-}
-
-shared_ptr<ScanResult> OrSyntax::process(int scanIndex, const string & source, string::size_type start) {
-	if (this->refSyntaxes.empty()) {
-		for (auto iterator = this->refKeys.begin(); iterator < this->refKeys.end(); iterator++) {
-			this->refSyntaxes.push_back(this->syntaxMap.find(*iterator)->second.get());
+shared_ptr<RexerResult> Or::rule(int id, const string & source, string::size_type start) {
+	// TODO: check initiated
+	
+	RexerResult * result = nullptr;
+	RexerResult * most = nullptr;
+	
+	for (Rule * refRule: this->refRules) {
+		RexerResult * refResult = refRule->execute(id, source, start);
+		
+		if (result == nullptr || (refResult->success && (result->end < refResult->end))) {
+			result = refResult;
+		}
+		
+		if (most == nullptr || (most->end < refResult->most->end)) {
+			most = refResult->most;
 		}
 	}
 	
-	shared_ptr<ScanResult> result;
-	ScanResult * most = nullptr;
-	
-	for (Syntax * refSyntax: this->refSyntaxes) {
-		shared_ptr<ScanResult> execute = refSyntax->execute(scanIndex, source, start);
-		
-		if (result == nullptr || (execute->success && (result->end < execute->end))) {
-			result = execute;
-		}
-		
-		if (most == nullptr || (most->end < execute->most->end)) {
-			most = execute->most;
-		}
-	}
-	
-	return make_shared<ScanResult>(result->success, result->start, result->end, result->tokens, most);
+	return make_shared<RexerResult>(result->success, result->start, result->end, result->tokens, most);
 }

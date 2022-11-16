@@ -1,14 +1,12 @@
 #include "rexer/rule/Group.h"
 
-#include <iostream>
-
 using namespace rexer;
 
-Group::Group(const map<int, shared_ptr<Rule>> & ruleMap, int key, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
+Group::Group(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
 	// EMPTY
 }
 
-Group::Group(const map<int, shared_ptr<Rule>> & ruleMap, int key, bool bundle, vector<Rule *> refRules) : Rule(key), ruleMap(ruleMap), bundle(bundle), refRules(move(refRules)) {
+Group::Group(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<Rule *> refRules) : Rule(key), ruleMap(ruleMap), bundle(bundle), refRules(move(refRules)) {
 	// EMPTY
 }
 
@@ -46,7 +44,7 @@ shared_ptr<RexerResult> Group::rule(int id, const string & source, string::size_
 	RexerResult * most = nullptr;
 	
 	for (Rule * refRule: this->refRules) {
-		shared_ptr<RexerResult> refResult = refRule->rule(id, source, end);
+		RexerResult * refResult = refRule->execute(id, source, end);
 		
 		if (most == nullptr || (most->end < refResult->most->end)) {
 			most = refResult->most;

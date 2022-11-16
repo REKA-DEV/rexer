@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <map>
-#include <memory>
 
 #include "rexer/RexerResult.h"
 
@@ -22,7 +21,7 @@ namespace rexer {
 		public:
 			explicit Rule(int key);
 			
-			RexerResult * execute(int id, const string & source, string::size_type start);
+			virtual RexerResult * execute(int id, const string & source, string::size_type start);
 			
 			virtual bool initiate() = 0;
 			virtual shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) = 0;

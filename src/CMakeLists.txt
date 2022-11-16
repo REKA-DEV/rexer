@@ -1,6 +1,6 @@
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
-add_library(rexer SHARED
+add_library(${PROJECT_NAME} SHARED
         Rexer.cpp
         RexerResult.cpp
         Token.cpp

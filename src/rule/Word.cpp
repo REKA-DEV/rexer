@@ -1,8 +1,13 @@
 #include "rexer/rule/Word.h"
 
+#include <iostream>
+
 using namespace rexer;
 
-Word::Word(int key, string word) : Rule(key), word(move(word)), length(this->word.length()) {
+Word::Word(int key, const map<int, shared_ptr<Rule>> & ruleMap, string word) : Rule(key), word(move(word)), length(this->word.length()) {
+	cout << "key: " << key << endl;
+	cout << "word: " << word << endl;
+	
 	// EMPTY
 }
 

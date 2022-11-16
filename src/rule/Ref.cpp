@@ -2,11 +2,11 @@
 
 using namespace rexer;
 
-Ref::Ref(const map<int, shared_ptr<Rule>> & ruleMap, int key, int refKey) : Rule(key), ruleMap(ruleMap), refKey(refKey) {
+Ref::Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, int refKey) : Rule(key), ruleMap(ruleMap), refKey(refKey) {
 	// EMPTY
 }
 
-Ref::Ref(const map<int, shared_ptr<Rule>> & ruleMap, int key, Rule * refRule) : Rule(key), ruleMap(ruleMap), refKey(-1), refRule(refRule) {
+Ref::Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * refRule) : Rule(key), ruleMap(ruleMap), refKey(-1), refRule(refRule) {
 	// EMPTY
 }
 
@@ -26,6 +26,12 @@ bool Ref::initiate() {
 	} while (false);
 	
 	return this->initiated;
+}
+
+RexerResult * Ref::execute(int id, const string & source, string::size_type start) {
+	// TODO: check initiated
+	
+	return this->refRule->execute(id, source, start);
 }
 
 shared_ptr<RexerResult> Ref::rule(int id, const string & source, string::size_type start) {

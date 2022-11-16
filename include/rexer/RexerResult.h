@@ -1,9 +1,6 @@
 #ifndef REXER_REXERRESULT_H
 #define REXER_REXERRESULT_H
 
-#include <memory>
-#include <string>
-
 #include "rexer/Token.h"
 
 using namespace std;
