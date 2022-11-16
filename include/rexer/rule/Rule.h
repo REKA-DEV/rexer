@@ -21,6 +21,8 @@ namespace rexer {
 		public:
 			explicit Rule(int key);
 			
+			int getKey();
+			
 			virtual RexerResult * execute(int id, const string & source, string::size_type start);
 			
 			virtual bool initiate() = 0;

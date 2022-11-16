@@ -23,14 +23,14 @@ namespace rexer {
 			int id = 0;
 			map<int, shared_ptr<Rule>> ruleMap;
 		
-		public:
-			
 			template<typename _Tp, typename... _Args>
 			Rule * make(int key, _Args &&... _args) {
 				shared_ptr<Rule> rule = make_shared<_Tp>(key, this->ruleMap, forward<_Args>(_args)...);
 				this->ruleMap[key] = rule;
 				return rule.get();
 			}
+			
+		public:
 			
 			template<typename... _Args>
 			Rule * mGroup(int key, _Args &&... _args) {

@@ -1,5 +1,7 @@
 #include "rexer/rule/Group.h"
 
+#include <iostream>
+
 using namespace rexer;
 
 Group::Group(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
@@ -49,6 +51,8 @@ shared_ptr<RexerResult> Group::rule(int id, const string & source, string::size_
 		if (most == nullptr || (most->end < refResult->most->end)) {
 			most = refResult->most;
 		}
+		
+		cout << "group: " << refRule->getKey() << ", " << refResult->success << endl;
 		
 		if (!refResult->success) {
 			success = false;

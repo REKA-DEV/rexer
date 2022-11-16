@@ -6,6 +6,10 @@ Rule::Rule(int key) : key(key) {
 	// EMPTY
 }
 
+int Rule::getKey() {
+	return this->key;
+}
+
 RexerResult * Rule::execute(const int id, const string & source, string::size_type start) {
 	pair<int, string::size_type> rexerPair = make_pair(id, start);
 	shared_ptr<RexerResult> rexerResult;

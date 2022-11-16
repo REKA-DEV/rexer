@@ -2,11 +2,11 @@
 
 using namespace rexer;
 
-Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
+Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), refKeys(move(refKeys)) {
 	// EMPTY
 }
 
-Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<Rule *> refRules) : Rule(key), ruleMap(ruleMap), bundle(bundle), refRules(move(refRules)) {
+Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, vector<Rule *> refRules) : Rule(key), ruleMap(ruleMap), refRules(move(refRules)) {
 	// EMPTY
 }
 

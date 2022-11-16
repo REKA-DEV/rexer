@@ -10,14 +10,13 @@ namespace rexer {
 	class Or : public Rule {
 		private:
 			const map<int, shared_ptr<Rule>> & ruleMap;
-			const bool bundle;
 			const vector<int> refKeys;
 			
 			vector<Rule *> refRules;
 		
 		public:
-			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys);
-			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<Rule *> refRules);
+			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, vector<int> refKeys);
+			explicit Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, vector<Rule *> refRules);
 			
 			bool initiate() override;
 			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
