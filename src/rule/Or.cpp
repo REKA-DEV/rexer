@@ -11,26 +11,25 @@ Or::Or(int key, const map<int, shared_ptr<Rule>> & ruleMap, vector<Rule *> refRu
 }
 
 bool Or::initiate() {
+	if (this->initiated) {
+		return this->initiated;
+	}
+	
 	do {
-		if (this->initiated) {
-			break;
-		}
-		
 		if (!this->refRules.empty()) {
-			this->initiated = true;
 			break;
 		}
 		
-		bool initiating = true;
-		
-		for (auto & iterator : this->refKeys) {
-			Rule * rule = this->ruleMap.find(iterator)->second.get();
-			initiating = initiating && rule->initiate();
-			this->refRules.push_back(rule);
+		for (int refKey : this->refKeys) {
+			this->refRules.push_back(this->ruleMap.find(refKey)->second.get());
 		}
-		
-		this->initiated = initiating;
 	} while (false);
+	
+	this->initiated = true;
+	
+	for (Rule * refRule : this->refRules) {
+		this->initiated = this->initiated && refRule->initiate();
+	}
 	
 	return this->initiated;
 }

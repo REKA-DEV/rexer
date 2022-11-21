@@ -11,19 +11,20 @@ Optional::Optional(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * r
 }
 
 bool Optional::initiate() {
+	if (this->initiated) {
+		return this->initiated;
+	}
+	
 	do {
-		if (this->initiated) {
-			break;
-		}
-		
 		if (this->refRule != nullptr) {
 			this->initiated = true;
 			break;
 		}
 		
 		this->refRule = this->ruleMap.find(this->refKey)->second.get();
-		this->initiated = this->refRule->initiate();
 	} while (false);
+	
+	this->initiated = this->refRule->initiate();
 	
 	return this->initiated;
 }
@@ -32,6 +33,10 @@ shared_ptr<RexerResult> Optional::rule(int id, const string & source, string::si
 	// TODO: check initiated
 	
 	RexerResult * refResult = this->refRule->execute(id, source, start);
-	
-	return make_shared<RexerResult>(true, refResult->start, refResult->success ? refResult->end : refResult->start, refResult->tokens, refResult->most);
+
+	if (refResult->success) {
+		return make_shared<RexerResult>(true, refResult->start, refResult->success ? refResult->end : refResult->start, refResult->tokens, refResult->most);
+	} else {
+		return make_shared<RexerResult>(true, refResult->start, refResult->success ? refResult->end : refResult->start, refResult->most);
+	}
 }

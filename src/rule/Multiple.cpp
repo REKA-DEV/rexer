@@ -11,19 +11,20 @@ Multiple::Multiple(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bun
 }
 
 bool Multiple::initiate() {
+	if (this->initiated) {
+		return this->initiated;
+	}
+	
 	do {
-		if (this->initiated) {
-			break;
-		}
-		
 		if (this->refRule != nullptr) {
 			this->initiated = true;
 			break;
 		}
 		
 		this->refRule = this->ruleMap.find(this->refKey)->second.get();
-		this->initiated = this->refRule->initiate();
 	} while (false);
+	
+	this->initiated = this->refRule->initiate();
 	
 	return this->initiated;
 }

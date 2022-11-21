@@ -1,7 +1,5 @@
 #include "rexer/rule/Group.h"
 
-#include <iostream>
-
 using namespace rexer;
 
 Group::Group(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, vector<int> refKeys) : Rule(key), ruleMap(ruleMap), bundle(bundle), refKeys(move(refKeys)) {
@@ -13,26 +11,25 @@ Group::Group(int key, const map<int, shared_ptr<Rule>> & ruleMap, bool bundle, v
 }
 
 bool Group::initiate() {
+	if (this->initiated) {
+		return this->initiated;
+	}
+	
 	do {
-		if (this->initiated) {
-			break;
-		}
-		
 		if (!this->refRules.empty()) {
-			this->initiated = true;
 			break;
 		}
 		
-		bool initiating = true;
-		
-		for (auto & iterator : this->refKeys) {
-			Rule * rule = this->ruleMap.find(iterator)->second.get();
-			initiating = initiating && rule->initiate();
-			this->refRules.push_back(rule);
+		for (int refKey : this->refKeys) {
+			this->refRules.push_back(this->ruleMap.find(refKey)->second.get());
 		}
-		
-		this->initiated = initiating;
 	} while (false);
+	
+	this->initiated = true;
+	
+	for (Rule * refRule : this->refRules) {
+		this->initiated = this->initiated && refRule->initiate();
+	}
 	
 	return this->initiated;
 }
@@ -48,11 +45,10 @@ shared_ptr<RexerResult> Group::rule(int id, const string & source, string::size_
 	for (Rule * refRule: this->refRules) {
 		RexerResult * refResult = refRule->execute(id, source, end);
 		
+		
 		if (most == nullptr || (most->end < refResult->most->end)) {
 			most = refResult->most;
 		}
-		
-		cout << "group: " << refRule->getKey() << ", " << refResult->success << endl;
 		
 		if (!refResult->success) {
 			success = false;
