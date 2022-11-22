@@ -19,7 +19,7 @@ namespace rexer {
 			explicit Skip(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * refRule);
 			
 			bool initiate() override;
-			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
+			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) noexcept override;
 	};
 	
 }

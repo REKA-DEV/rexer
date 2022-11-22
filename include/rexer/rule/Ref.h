@@ -18,10 +18,10 @@ namespace rexer {
 			explicit Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, int refKey);
 			explicit Ref(int key, const map<int, shared_ptr<Rule>> & ruleMap, Rule * refRule);
 			
-			RexerResult * execute(int id, const string & source, string::size_type start) override;
+			RexerResult * execute(int id, const string & source, string::size_type start) noexcept override;
 			
 			bool initiate() override;
-			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
+			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) noexcept override;
 	};
 	
 }

@@ -11,6 +11,6 @@ bool Run::initiate() {
 	return this->initiated;
 }
 
-shared_ptr<RexerResult> Run::rule(int id, const string & source, string::size_type start) {
+shared_ptr<RexerResult> Run::rule(int id, const string & source, string::size_type start) noexcept {
 	return this->run(id, source, start);
 }

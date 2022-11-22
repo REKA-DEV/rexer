@@ -29,14 +29,10 @@ bool Ref::initiate() {
 	return this->initiated;
 }
 
-RexerResult * Ref::execute(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+RexerResult * Ref::execute(int id, const string & source, string::size_type start) noexcept {
 	return this->refRule->execute(id, source, start);
 }
 
-shared_ptr<RexerResult> Ref::rule(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+shared_ptr<RexerResult> Ref::rule(int id, const string & source, string::size_type start) noexcept {
 	return this->refRule->rule(id, source, start);
 }

@@ -11,9 +11,7 @@ bool Regex::initiate() {
 	return this->initiated;
 }
 
-shared_ptr<RexerResult> Regex::rule(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+shared_ptr<RexerResult> Regex::rule(int id, const string & source, string::size_type start) noexcept {
 	bool success = false;
 	string::size_type end = start;
 	vector<shared_ptr<Token>> tokens;

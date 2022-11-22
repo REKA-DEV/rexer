@@ -29,9 +29,7 @@ bool Multiple::initiate() {
 	return this->initiated;
 }
 
-shared_ptr<RexerResult> Multiple::rule(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+shared_ptr<RexerResult> Multiple::rule(int id, const string & source, string::size_type start) noexcept {
 	string::size_type end = start;
 	vector<shared_ptr<Token>> tokens;
 	RexerResult * most = nullptr;

@@ -34,9 +34,7 @@ bool Or::initiate() {
 	return this->initiated;
 }
 
-shared_ptr<RexerResult> Or::rule(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+shared_ptr<RexerResult> Or::rule(int id, const string & source, string::size_type start) noexcept {
 	RexerResult * result = nullptr;
 	RexerResult * most = nullptr;
 	

@@ -23,10 +23,10 @@ namespace rexer {
 			
 			int getKey();
 			
-			virtual RexerResult * execute(int id, const string & source, string::size_type start);
+			virtual RexerResult * execute(int id, const string & source, string::size_type start) noexcept;
 			
 			virtual bool initiate() = 0;
-			virtual shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) = 0;
+			virtual shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) noexcept = 0;
 			
 			virtual ~Rule() = default;
 	};

@@ -17,7 +17,7 @@ namespace rexer {
 			explicit Regex(int key, const map<int, shared_ptr<Rule>> & ruleMap, regex reg);
 			
 			bool initiate() override;
-			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) override;
+			shared_ptr<RexerResult> rule(int id, const string & source, string::size_type start) noexcept override;
 	};
 	
 }

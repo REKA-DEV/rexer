@@ -29,9 +29,7 @@ bool Skip::initiate() {
 	return this->initiated;
 }
 
-shared_ptr<RexerResult> Skip::rule(int id, const string & source, string::size_type start) {
-	// TODO: check initiated
-	
+shared_ptr<RexerResult> Skip::rule(int id, const string & source, string::size_type start) noexcept {
 	RexerResult * refResult = this->refRule->execute(id, source, start);
 	
 	return make_shared<RexerResult>(refResult->success, refResult->start, refResult->end, refResult->most);
